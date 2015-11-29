@@ -48,7 +48,7 @@ class AFNViewController: UIViewController,UICollectionViewDataSource,UICollectio
         
         switch self.type {
         case AFN_TYPE.self.AFN_OPERATION.rawValue :
-            var manager:AFHTTPRequestOperationManager = AFHTTPRequestOperationManager()
+            let manager:AFHTTPRequestOperationManager = AFHTTPRequestOperationManager()
             manager.responseSerializer = AFImageResponseSerializer()
             let requestSuccess = {
                 (operation :AFHTTPRequestOperation!, responseObject :AnyObject!) -> Void in
@@ -58,12 +58,12 @@ class AFNViewController: UIViewController,UICollectionViewDataSource,UICollectio
             }
             let requestFailure = {
                 (operation :AFHTTPRequestOperation!, error :NSError!) -> Void in
-                println("failure: \(error.localizedDescription)")
+                print("failure: \(error.localizedDescription)")
             }
             
             manager.GET(photoUrlString, parameters: nil, success: requestSuccess, failure: requestFailure)
         case AFN_TYPE.self.AFN_SESSION.rawValue:
-            var manager:AFHTTPSessionManager = AFHTTPSessionManager()
+            let manager:AFHTTPSessionManager = AFHTTPSessionManager()
             manager.responseSerializer = AFImageResponseSerializer()
             manager.GET(photoUrlString, parameters: nil,
                 success: { (task:NSURLSessionDataTask!, responseObject:AnyObject!) -> Void in
@@ -71,7 +71,7 @@ class AFNViewController: UIViewController,UICollectionViewDataSource,UICollectio
                         cell.photoImageView.image = image
                     }
                 }, failure: { (task:NSURLSessionDataTask!, error:NSError!) -> Void in
-                    println("failure:\(error.localizedDescription)")
+                    print("failure:\(error.localizedDescription)")
             })
         default:
             let imageRequestSuccess = {
@@ -84,7 +84,7 @@ class AFNViewController: UIViewController,UICollectionViewDataSource,UICollectio
             }
             let imageRequestFailure = {
                 (request : NSURLRequest!, response : NSHTTPURLResponse!, error : NSError!) -> Void in
-                println("failure:\(error.localizedDescription)")
+                print("failure:\(error.localizedDescription)")
             }
             let photoUrlRequest : NSURLRequest = NSURLRequest(URL: NSURL(string:photoUrlString)!)
             cell.photoImageView.setImageWithURLRequest(photoUrlRequest, placeholderImage: nil, success: imageRequestSuccess, failure: imageRequestFailure)
@@ -140,7 +140,7 @@ class AFNViewController: UIViewController,UICollectionViewDataSource,UICollectio
         layout.sectionInset = UIEdgeInsets(top: marginSize, left: marginSize, bottom: marginSize, right: marginSize)
         layout.minimumInteritemSpacing = marginSize
         layout.minimumLineSpacing = marginSize*2
-        var itemSize = (Int(self.view.frame.width) - Int(marginSize*2))/columnCount-Int(marginSize)
+        let itemSize = (Int(self.view.frame.width) - Int(marginSize*2))/columnCount-Int(marginSize)
         layout.itemSize = CGSize(width: itemSize, height: itemSize)
         
         let frame:CGRect = CGRect(x: 0, y: 80, width: self.view.frame.width, height: self.view.frame.height-80)

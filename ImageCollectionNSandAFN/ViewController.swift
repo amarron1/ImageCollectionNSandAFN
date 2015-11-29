@@ -27,18 +27,18 @@ class ViewController: UIViewController {
     
     @IBAction func dispNSView(sender: UIButton) {
         let viewController = NSViewController(nibName: "NSView", bundle: nil)
-        viewController.columnCount = self.columnCount.text.toInt()!
-        viewController.marginSize = CGFloat(self.marginSize.text.toInt()!)
-        viewController.photoCount = self.photoCount.text.toInt()!
+        viewController.columnCount = Int(self.columnCount.text!)!
+        viewController.marginSize = CGFloat(Int(self.marginSize.text!)!)
+        viewController.photoCount = Int(self.photoCount.text!)!
         viewController.type = sender.tag
         self.presentViewController(viewController, animated: true, completion: nil)
     }
     
     @IBAction func dispAFNView(sender: UIButton) {
         let viewController = AFNViewController(nibName: "AFNView", bundle: nil)
-        viewController.columnCount = self.columnCount.text.toInt()!
-        viewController.marginSize = CGFloat(self.marginSize.text.toInt()!)
-        viewController.photoCount = self.photoCount.text.toInt()!
+        viewController.columnCount = Int(self.columnCount.text!)!
+        viewController.marginSize = CGFloat(Int(self.marginSize.text!)!)
+        viewController.photoCount = Int(self.photoCount.text!)!
         viewController.type = sender.tag
         self.presentViewController(viewController, animated: true, completion: nil)
 

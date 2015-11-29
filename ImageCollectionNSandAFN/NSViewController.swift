@@ -58,7 +58,7 @@ class NSViewController: UIViewController,UICollectionViewDataSource,UICollection
             // 通信のタスクを生成.
             let task = session.dataTaskWithURL(url, completionHandler: {
                 (data, response, err) in
-                cell.photoImageView.image = UIImage(data: data)!
+                cell.photoImageView.image = UIImage(data: data!)!
             })
             // タスクの実行.
             task.resume()
@@ -69,7 +69,7 @@ class NSViewController: UIViewController,UICollectionViewDataSource,UICollection
             let request:NSURLRequest = NSURLRequest(URL:url)
             let queue:NSOperationQueue = NSOperationQueue()
             // NSURLConnectionを使ってアクセス
-            NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler:{ (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void in
+            NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler:{ (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
                 cell.photoImageView.image = UIImage(data: data!)!
             })
             
@@ -81,11 +81,17 @@ class NSViewController: UIViewController,UICollectionViewDataSource,UICollection
             // NSURLConnectionを使ってアクセス
             var response: NSURLResponse?
             var error: NSError?
-            let data = NSURLConnection.sendSynchronousRequest(request, returningResponse: &response, error: &error)
+            let data: NSData?
+            do {
+                data = try NSURLConnection.sendSynchronousRequest(request, returningResponse: &response)
+            } catch let error1 as NSError {
+                error = error1
+                data = nil
+            }
             if error == nil{
                 cell.photoImageView.image = UIImage(data:data!)!
             } else {
-                println("failure: \(error!.localizedDescription)")
+                print("failure: \(error!.localizedDescription)")
             }
         }
         
@@ -118,11 +124,16 @@ class NSViewController: UIViewController,UICollectionViewDataSource,UICollection
         // NSURLConnectionを使ってアクセス
         var response: NSURLResponse?
         var error: NSError?
-        let data = NSURLConnection.sendSynchronousRequest(request, returningResponse: &response, error: &error)
+        let data: NSData?
+        do {
+            data = try NSURLConnection.sendSynchronousRequest(request, returningResponse: &response)
+        } catch let error1 as NSError {
+            error = error1
+            data = nil
+        }
         if error == nil{
-            var result = NSString(data: data!, encoding: NSUTF8StringEncoding)!
-            let json:NSDictionary = NSJSONSerialization.JSONObjectWithData(data!,
-                options: NSJSONReadingOptions.AllowFragments, error: nil) as! NSDictionary
+            let json:NSDictionary = (try! NSJSONSerialization.JSONObjectWithData(data!,
+                options: NSJSONReadingOptions.AllowFragments)) as! NSDictionary
             
             if let array:Array = json.objectForKey("photos")?.objectForKey("photo") as? Array<Dictionary<String, AnyObject>> {
                 self.photos = array
@@ -141,7 +152,7 @@ class NSViewController: UIViewController,UICollectionViewDataSource,UICollection
         layout.sectionInset = UIEdgeInsets(top: marginSize, left: marginSize, bottom: marginSize, right: marginSize)
         layout.minimumInteritemSpacing = marginSize
         layout.minimumLineSpacing = marginSize*2
-        var itemSize = (Int(self.view.frame.width) - Int(marginSize*2))/columnCount-Int(marginSize*2)
+        let itemSize = (Int(self.view.frame.width) - Int(marginSize*2))/columnCount-Int(marginSize*2)
         layout.itemSize = CGSize(width: itemSize, height: itemSize)
         
         let frame:CGRect = CGRect(x: 0, y: 80, width: self.view.frame.width, height: self.view.frame.height-80)
